@@ -58,6 +58,27 @@ public class JAXRSAnalyzerMojo extends AbstractMojo {
      * @parameter default-value="plaintext" property="jaxrs-analyzer.backend"
      */
     private String backend;
+    
+    /**
+     * The API version. Defaults to the project version. 
+     * 
+     * @parameter default-value="${project.version}" property="jaxrs-analyzer.apiVersion"
+     */
+    private String apiVersion;
+    
+    /**
+     * The API name. Defaults to the project name. 
+     * 
+     * @parameter default-value="${project.name}" property="jaxrs-analyzer.apiName"
+     */
+    private String apiName;
+    
+    /**
+     * The API base path. Defaults to the project name. 
+     * 
+     * @parameter default-value="${project.name}" property="jaxrs-analyzer.basePath"
+     */
+    private String basePath;
 
     /**
      * The domain where the project will be deployed.
@@ -191,7 +212,7 @@ public class JAXRSAnalyzerMojo extends AbstractMojo {
 
         // start analysis
         final long start = System.currentTimeMillis();
-        new JAXRSAnalyzer(projectPaths, sourcePaths, classPaths, project.getName(), project.getVersion(), backend, fileLocation).analyze();
+        new JAXRSAnalyzer(projectPaths, sourcePaths, classPaths, apiName, apiVersion, backend, fileLocation).analyze();
         LogProvider.debug("Analysis took " + (System.currentTimeMillis() - start) + " ms");
     }
 
@@ -218,6 +239,7 @@ public class JAXRSAnalyzerMojo extends AbstractMojo {
         final Map<String, String> config = new HashMap<>();
         config.put(SwaggerOptions.SWAGGER_SCHEMES, Stream.of(swaggerSchemes).collect(joining(",")));
         config.put(SwaggerOptions.DOMAIN, deployedDomain);
+        config.put(SwaggerOptions.BASE_PATH, basePath);
         config.put(SwaggerOptions.RENDER_SWAGGER_TAGS, renderSwaggerTags.toString());
         config.put(SwaggerOptions.SWAGGER_TAGS_PATH_OFFSET, swaggerTagsPathOffset.toString());
 
